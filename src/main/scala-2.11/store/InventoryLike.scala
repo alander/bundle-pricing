@@ -26,9 +26,7 @@ trait InventoryLike {
   def filter(p: (InventoryItem) => Boolean): Iterable[InventoryItem] = items.filter(p)
   def filterNot(p: (InventoryItem) => Boolean): Iterable[InventoryItem] = items.filterNot(p)
 
-  def totalPrice: Double = itemsMap.values.foldLeft(0.0)(_ + _.totalPrice)
-
-
+  def totalPrice: Double = items.foldLeft(0.0)(_ + _.totalPrice)
 }
 
 
