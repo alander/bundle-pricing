@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Store</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">store</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Store (store)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Store</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Store$</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Store$$anonfun$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/ 10)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package store
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import scala.annotation.tailrec
+<i>4</i>&nbsp;import scala.collection.immutable.Set
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;/**
+<i>7</i>&nbsp;  * A Store represents the inventory and all possible discount bundles that can be shopped
+<i>8</i>&nbsp;  *
+<i>9</i>&nbsp;  * @param bundles The discount bundles that can be applied to a shopping cart
+<i>10</i>&nbsp;  * @param inventory The inventory of items that can be shopped
+<i>11</i>&nbsp;  */
+<b class="pc"><i>12</i>&nbsp;case class Store(bundles: Set[Bundle], inventory: Inventory) {</b>
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;  /**
+<i>15</i>&nbsp;    * Compute and answer the best possible price for the given shopping cart, considering all the possible bundles
+<i>16</i>&nbsp;    * that can be applied to it.
+<i>17</i>&nbsp;    *
+<i>18</i>&nbsp;    * Enumerating the bundles is factorial in the number of bundles, so this is fine for a small number of
+<i>19</i>&nbsp;    * them, but if there are more than a few tens of bundles available, a different method should be employed.
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    * The exponential work must be done once at setup time to create a lookup table which can be traversed in
+<i>22</i>&nbsp;    * linear or log-linear time at runtime.
+<i>23</i>&nbsp;    *
+<i>24</i>&nbsp;    * @param shoppingCart The ShoppingCart of items to price
+<i>25</i>&nbsp;    * @return The best possible price for the shopping cart
+<i>26</i>&nbsp;    */
+<i>27</i>&nbsp;  def bestPrice(shoppingCart: ShoppingCart): Double = {
+<b class="fc"><i>28</i>&nbsp;    val subsets = bundles.subsets</b>
+<b class="fc"><i>29</i>&nbsp;    val minPrice = subsets.flatMap((bundles) =&gt; priceShoppingCartAgainstBundles(bundles.toList, shoppingCart)).min</b>
+<i>30</i>&nbsp;
+<b class="fc"><i>31</i>&nbsp;    minPrice.min(shoppingCart.priceAgainst(inventory))</b>
+<i>32</i>&nbsp;  }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;  /**
+<i>35</i>&nbsp;    * Answer the price of shoppingCart after applying the given bundles.
+<i>36</i>&nbsp;    * Answer None if the bundles cannot be applied.
+<i>37</i>&nbsp;    *
+<i>38</i>&nbsp;    * @param bundles Bundles to apply
+<i>39</i>&nbsp;    * @param shoppingCart The shopping cart to price
+<i>40</i>&nbsp;    * @param priceForBundles The price of bundles that have already been applied (initially 0.0)
+<i>41</i>&nbsp;    * @return Optionally, a double representing the price of the shopping cart.
+<i>42</i>&nbsp;    */
+<i>43</i>&nbsp;  @tailrec
+<i>44</i>&nbsp;  private def priceShoppingCartAgainstBundles(bundles: List[Bundle],
+<i>45</i>&nbsp;                                              shoppingCart: ShoppingCart,
+<b class="fc"><i>46</i>&nbsp;                                              priceForBundles: Double = 0.0): Option[Double] = bundles match {</b>
+<b class="fc"><i>47</i>&nbsp;      case Nil =&gt; Some(priceForBundles + shoppingCart.priceAgainst(inventory))</b>
+<b class="fc"><i>48</i>&nbsp;      case x :: xs if !shoppingCart.canApply(x) =&gt; None</b>
+<b class="fc"><i>49</i>&nbsp;      case x :: xs =&gt; priceShoppingCartAgainstBundles(xs, shoppingCart.applyBundle(x), priceForBundles + x.discountedPrice)</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-04-24 20:33</div>
+</div>
+</body>
+</html>
