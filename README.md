@@ -41,11 +41,11 @@ An InventoryLike can answer questions about the items it contains, such as wheth
 
 ### case class Inventory
 
-An Inventory represents a concrete group of items with prices
+Inventory extends InventoryLike, and represents a concrete group of items with prices
 
 ### case class Bundle
 
-A Bundle represents a concrete group of items available for a discounted "bundle" price.
+Bundle extends InventoryLike, and represents a concrete group of items available for a discounted "bundle" price.
 
 ## Bundle Algorithm
 
